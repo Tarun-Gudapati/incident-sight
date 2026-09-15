@@ -1,0 +1,23 @@
+### Health
+GET http://127.0.0.1:8000/health
+Accept: application/json
+
+### Deterministic triage (metadata and log fixture embedded for portability)
+POST http://127.0.0.1:8000/api/triage
+Accept: application/json
+Content-Type: multipart/form-data; boundary=IncidentSightBoundary
+
+--IncidentSightBoundary
+Content-Disposition: form-data; name="metadata"
+Content-Type: application/json
+
+{"incident_id":"INC-2026-0915","title":"Checkout API intermittently unavailable","service":"checkout-api","environment":"production","occurred_at":"2026-09-15T02:55:00Z","description":"Synthetic checkout checks began failing after a deployment.","reported_impact":"Some checkout attempts are reported as unsuccessful."}
+--IncidentSightBoundary
+Content-Disposition: form-data; name="log_text"
+Content-Type: text/plain
+
+2026-09-15T02:55:01Z INFO checkout request started request_id=req-123
+2026-09-15T02:55:02Z WARN inventory call slow request_id=req-123
+2026-09-15T02:55:04Z ERROR CheckoutException: inventory request timed out status=503
+2026-09-15T02:55:05Z INFO response status=503 request_id=req-123
+--IncidentSightBoundary--
